@@ -5,6 +5,7 @@ import com.example.salesbackend.Exception.AppException;
 import com.example.salesbackend.Model.User;
 import com.example.salesbackend.Service.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,8 +54,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<UserSession> checkLogin(@RequestBody UserDTO user, HttpSession httpSession){
-        return userService.checkLogin(user, httpSession);
+    public ApiResponse<String> checkLogin(@RequestBody UserDTO user, HttpSession httpSession, HttpServletResponse response){
+        return userService.checkLogin(user, httpSession, response);
     }
 
     @PostMapping("/logout")
@@ -73,7 +74,7 @@ public class UserController {
     }
 
     @PostMapping("/reset-password")
-    public ApiResponse<String> updatePassword(@RequestParam("token") String token, @RequestBody ResetPassword password){
+    public ApiResponse<String> resetPassword(@RequestParam("token") String token, @RequestBody ResetPassword password){
         return userService.resetPassword(token, password);
     }
 

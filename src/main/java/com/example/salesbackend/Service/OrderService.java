@@ -20,7 +20,6 @@ public class OrderService {
         return order.getOrderUserId() != 0 && order.getOrderUserId()!=0L &&
                 order.getOrderDate() != null &&
                 order.getOrderTotalPrice() != 0 && order.getOrderTotalPrice()!= 0L &&
-                order.getOrderStatus()!= null && !order.getOrderStatus().isEmpty() &&
                 order.getOrderPaymentMethod()!= null && !order.getOrderPaymentMethod().isEmpty() &&
                 order.getOrderPaymentStatus()!= null && !order.getOrderPaymentStatus().isEmpty() &&
                 order.getOrderShippingAddress()!= null && !order.getOrderShippingAddress().isEmpty() &&
@@ -56,6 +55,7 @@ public class OrderService {
 
     public ApiResponse<Order> addOrder(Order order){
         if(checkOrder(order)){
+            order.setOrderStatus("pending");
             orderRepositoryInterface.addOrder(order);
             return new ApiResponse<>(HttpStatusCode.ADD_SUCCESS.getCode(), HttpStatusCode.ADD_SUCCESS.getMessage(), order);
         }

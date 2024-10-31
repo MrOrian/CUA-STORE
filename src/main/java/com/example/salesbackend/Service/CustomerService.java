@@ -18,7 +18,8 @@ public class CustomerService {
     private UserService userService;
 
     public ApiResponse<User> addCustomer(Customer customer) throws MessagingException, UnsupportedEncodingException {
-        return userService.addUser(customer);
+        customer.setuserRole("customer");
+        return userService.SignUp(customer);
     }
 
     public ApiResponse<User> updateCustomer(Long id, Customer customer){

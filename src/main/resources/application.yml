@@ -3,6 +3,9 @@ spring:
     store-type: jdbc
     jdbc:
       table-name: SPRING_SESSION
+    timeout: 1800
+    servlet:
+      session-timeout: 1800
   main:
     allow-bean-definition-overriding: true
   mail:
@@ -17,3 +20,11 @@ spring:
           starttls:
             enable: true
             debug: true
+server:
+  port: 8080
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        secure: false
+        max-age: 1800

@@ -16,7 +16,8 @@ public class EmployeeService {
     private UserService userService;
 
     public ApiResponse<User> addEmployee(Employee employee) throws MessagingException, UnsupportedEncodingException {
-        return userService.addUser(employee);
+        employee.setuserRole("employee");
+        return userService.SignUp(employee);
     }
 
     public ApiResponse<User> updateEmployee(Long id, Employee employee){

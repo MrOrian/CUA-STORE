@@ -4,6 +4,8 @@ import com.example.salesbackend.DTO.*;
 import com.example.salesbackend.Model.User;
 import com.example.salesbackend.Repository.UserRepositoryInterface;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -100,19 +102,14 @@ public class UserService {
         return "customer";
     }
 
-    public ApiResponse<UserSession> checkLogin(UserDTO user, HttpSession session) {
+    public ApiResponse<String> checkLogin(UserDTO user, HttpSession session, HttpServletResponse response) {
         UserDTO newUser = userRepositoryInterface.checkUserValid(user);
         if (newUser != null) {
             if (bCryptPasswordEncoder.matches(user.getUserPass(), newUser.getUserPass())) {
                 session.setAttribute("username", newUser.getUserName());
                 session.setAttribute("role", newUser.getUserRole());
                 if (newUser.getUserStatus().equals("active")) {
-                    UserSession userSession =
-                            new UserSession(
-                                    (String) session.getAttribute("username"),
-                                    (String) session.getAttribute("role")
-                            );
-                    return new ApiResponse<>(HttpStatusCode.SUCCESS.getCode(), HttpStatusCode.SUCCESS.getMessage(), userSession);
+                    return new ApiResponse<>(HttpStatusCode.SUCCESS.getCode(), HttpStatusCode.SUCCESS.getMessage(), session.getId());
                 }
                 else
                     return new ApiResponse<>(HttpStatusCode.NO_ACTIVE.getCode(), HttpStatusCode.NO_ACTIVE.getMessage(), null);

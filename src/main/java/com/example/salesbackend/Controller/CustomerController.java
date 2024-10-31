@@ -17,7 +17,7 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @PostMapping
+    @PostMapping("/signup")
     public ApiResponse<User> signUp(@RequestBody Customer customer) throws MessagingException, UnsupportedEncodingException {
         return customerService.addCustomer(customer);
     }
