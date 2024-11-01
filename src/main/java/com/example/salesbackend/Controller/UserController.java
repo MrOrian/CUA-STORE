@@ -54,13 +54,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ApiResponse<String> checkLogin(@RequestBody UserDTO user, HttpSession httpSession, HttpServletResponse response){
-        return userService.checkLogin(user, httpSession, response);
+    public ApiResponse<String> checkLogin(@RequestBody UserDTO user, HttpServletResponse response){
+        return userService.checkLogin(user, response);
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> checkLogin(HttpSession httpSession){
-        return userService.logout(httpSession);
+    @GetMapping("/logout")
+    public ResponseEntity<String> checkLogin(@RequestParam("id") String session, HttpServletResponse response){
+        return userService.logout(session, response);
     }
 
     @PostMapping("/signup")

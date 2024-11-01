@@ -23,6 +23,9 @@ public class UserService {
     private UserRepositoryInterface userRepositoryInterface;
 
     @Autowired
+    private UserSessionService userSessionService;
+
+    @Autowired
     private EmailService emailService;
 
     @Autowired
@@ -102,14 +105,24 @@ public class UserService {
         return "customer";
     }
 
-    public ApiResponse<String> checkLogin(UserDTO user, HttpSession session, HttpServletResponse response) {
+    public void createCookie(HttpServletResponse response, String sessionId){
+        Cookie sessionCookie = new Cookie("JSESSIONID", sessionId);
+        sessionCookie.setPath("/");
+        response.addCookie(sessionCookie);
+    }
+
+
+
+    public ApiResponse<String> checkLogin(UserDTO user, HttpServletResponse response) {
         UserDTO newUser = userRepositoryInterface.checkUserValid(user);
         if (newUser != null) {
             if (bCryptPasswordEncoder.matches(user.getUserPass(), newUser.getUserPass())) {
-                session.setAttribute("username", newUser.getUserName());
-                session.setAttribute("role", newUser.getUserRole());
+                String sessionId = UUID.randomUUID().toString();
+                userSessionService.createSession(sessionId, newUser);
+
                 if (newUser.getUserStatus().equals("active")) {
-                    return new ApiResponse<>(HttpStatusCode.SUCCESS.getCode(), HttpStatusCode.SUCCESS.getMessage(), session.getId());
+                    createCookie(response,sessionId);
+                    return new ApiResponse<>(HttpStatusCode.SUCCESS.getCode(), HttpStatusCode.SUCCESS.getMessage(), sessionId);
                 }
                 else
                     return new ApiResponse<>(HttpStatusCode.NO_ACTIVE.getCode(), HttpStatusCode.NO_ACTIVE.getMessage(), null);
@@ -119,8 +132,12 @@ public class UserService {
         } return new ApiResponse<>(HttpStatusCode.USER_NOT_FOUND.getCode(), HttpStatusCode.USER_NOT_FOUND.getMessage(), null);
     }
 
-    public ResponseEntity<String> logout(HttpSession session){
-        session.invalidate();
+    public ResponseEntity<String> logout(String session, HttpServletResponse response){
+        Cookie sessionCookie = new Cookie("JSESSIONID", session);
+        sessionCookie.setPath("/");
+        sessionCookie.setMaxAge(0);
+        response.addCookie(sessionCookie);
+        userSessionService.deleteSession(session);
         return ResponseEntity.ok("log-out success");
     }
 
