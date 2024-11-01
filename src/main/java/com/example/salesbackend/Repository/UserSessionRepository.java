@@ -44,7 +44,7 @@ public class UserSessionRepository implements UserSessionRepositoryInterface{
 
     @Override
     public void deleteExpiredSession() {
-        String sql = "delete from user_sessions where expires_at < NOW()";
+        String sql = "delete from user_sessions where  expires_at < CONVERT_TZ(NOW(), 'UTC', 'Asia/Ho_Chi_Minh')";
         jdbcTemplate.update(sql);
     }
 }

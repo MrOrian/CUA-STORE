@@ -29,8 +29,4 @@ public class UserSessionService {
         userSessionRepositoryInterface.deleteSession(sessionId);
     }
 
-    @Scheduled(fixedRate = 60000)
-    public void cleanupExpiredSession(){
-        userSessionRepositoryInterface.deleteExpiredSession();
-    }
 }
